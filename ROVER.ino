@@ -9,13 +9,13 @@ const int TRIG_PIN       = 10;
 const int ECHO_PIN       = 11;
 
 const int PASSO              = 2;
-const int DELAY_AUTOMATICO   = 20;   // ms entre cada passo no modo auto
-const int DELAY_MS           = 10;   // ms entre leituras de botão
-const int DISTANCIA_ALERTA   = 30;   // cm
-const unsigned long TIMEOUT_MANUAL = 5000; // ms para voltar ao automático
+const int DELAY_AUTOMATICO   = 20;
+const int DELAY_MS           = 10;
+const int DISTANCIA_ALERTA   = 30;
+const unsigned long TIMEOUT_MANUAL = 5000;
 
 int  angulo        = 0;
-int  direcao       = 1;       // 1 = crescendo, -1 = decrescendo
+int  direcao       = 1;
 bool modoManual    = false;
 unsigned long ultimoBotao = 0;
 
@@ -48,7 +48,6 @@ void loop() {
   bool btnEsq = digitalRead(BTN_ESQUERDA) == HIGH;
   bool btnDir = digitalRead(BTN_DIREITA)  == HIGH;
 
-  // --- Detecção de botão → entra/mantém modo manual ---
   if (btnEsq || btnDir) {
     if (!modoManual) {
       modoManual = true;
@@ -62,13 +61,11 @@ void loop() {
     delay(DELAY_MS);
   }
 
-  // --- Timeout: volta ao automático após 5 s sem botão ---
   if (modoManual && (millis() - ultimoBotao >= TIMEOUT_MANUAL)) {
     modoManual = false;
     Serial.println("[AUTOMATICO]");
   }
 
-  // --- Varredura automática ---
   if (!modoManual) {
     angulo += direcao * PASSO;
 
@@ -79,7 +76,6 @@ void loop() {
     delay(DELAY_AUTOMATICO);
   }
 
-  // --- Sensor ultrassônico ---
   float distancia = medirDistancia();
 
   if (distancia > 0 && distancia <= DISTANCIA_ALERTA) {
